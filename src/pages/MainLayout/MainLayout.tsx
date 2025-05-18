@@ -55,7 +55,7 @@ const MainLayout: FunctionComponent = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-grow overflow-y-auto bg-[#121212] p-6 sm:p-8 md:p-10 ml-0 sm:ml-4">
+      <main className="flex-grow overflow-y-auto bg-[#121212]">
         <div className="max-w-screen-xl mx-auto w-full text-white">
           <Outlet />
         </div>

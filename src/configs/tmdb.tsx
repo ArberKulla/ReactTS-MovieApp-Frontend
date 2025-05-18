@@ -30,6 +30,8 @@ export const TMDB = {
 
   // Details
   getMovieDetails(id: string | number) {
-    return `${API_BASE}/movie/${id}?api_key=${API_KEY}&append_to_response=videos`;
-  },
+    return `${API_BASE}/movie/${id}?api_key=${API_KEY}&append_to_response=credits`;
+  }
+
+  
 };

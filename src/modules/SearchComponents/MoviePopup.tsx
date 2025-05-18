@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 interface MoviePopupProps {
   movie: any;
@@ -15,6 +16,7 @@ const MoviePopup: React.FC<MoviePopupProps> = ({
   onMouseEnter,
   onMouseLeave,
 }) => {
+  const navigate = useNavigate();
   const fallbackImage = "/fallback.jpg"; // Place this in your /public folder
   const imageSrc = movie.backdrop_path
     ? `https://image.tmdb.org/t/p/w500/${movie.backdrop_path}`
@@ -23,6 +25,10 @@ const MoviePopup: React.FC<MoviePopupProps> = ({
   const overview = movie.overview?.trim()
     ? movie.overview
     : "No description available for this movie.";
+
+  const handleWatchNow = () => {
+    navigate(`/watch/movie/${movie.id}`);
+  };
 
   return (
     <div
@@ -53,7 +59,10 @@ const MoviePopup: React.FC<MoviePopupProps> = ({
 
       {/* Bottom - Button */}
       <div className="px-4 pb-4">
-        <button className="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded cursor-pointer">
+        <button
+          onClick={handleWatchNow}
+          className="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded cursor-pointer"
+        >
           Watch Now
         </button>
       </div>
