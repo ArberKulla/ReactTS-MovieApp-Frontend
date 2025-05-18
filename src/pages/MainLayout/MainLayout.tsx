@@ -17,7 +17,7 @@ const MainLayout: FunctionComponent = () => {
       <div className="sm:hidden absolute top-4 left-4 z-50">
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="p-2 border rounded shadow-md text-white bg-zinc-800"
+          className="p-2 border rounded shadow-md text-white bg-zinc-900"
         >
           <MenuOutlined />
         </button>
@@ -55,8 +55,8 @@ const MainLayout: FunctionComponent = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-grow overflow-y-auto bg-[#121212]">
-        <div className="max-w-screen-xl mx-auto w-full text-white">
+      <main className="flex-grow overflow-y-auto bg-zinc-900">
+        <div className="max-w-screen-xl w-full text-white">
           <Outlet />
         </div>
       </main>

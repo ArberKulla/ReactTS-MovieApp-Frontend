@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 interface MovieCardProps {
   movie: any;
@@ -11,12 +12,19 @@ const MovieCard: React.FC<MovieCardProps> = ({
   onMouseEnter,
   onMouseLeave,
 }) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/watch/movie/${movie.id}`);
+  };
+
   return (
     <div
       key={movie.id}
-      onMouseEnter={(e) => onMouseEnter(e)}
+      onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      className="relative min-w-[150px] max-w-[150px] transition duration-200 transform hover:scale-105 m-2"
+      onClick={handleClick}
+      className="relative min-w-[150px] max-w-[150px] transition duration-200 transform hover:scale-105 mr-3 cursor-pointer"
     >
       <img
         src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
@@ -32,3 +40,4 @@ const MovieCard: React.FC<MovieCardProps> = ({
 };
 
 export default MovieCard;
+
