@@ -28,7 +28,6 @@ export const TMDB = {
     return `${API_BASE}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}`;
   },
 
-  // Details
   getMovieDetails(id: string | number) {
     return `${API_BASE}/movie/${id}?api_key=${API_KEY}&append_to_response=credits`;
   },
