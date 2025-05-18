@@ -31,7 +31,10 @@ export const TMDB = {
   // Details
   getMovieDetails(id: string | number) {
     return `${API_BASE}/movie/${id}?api_key=${API_KEY}&append_to_response=credits`;
-  }
+  },
 
-  
+  // Movie Images (logos, backdrops, etc)
+  getMovieImages(id: string | number) {
+    return `${API_BASE}/movie/${id}/images?api_key=${API_KEY}&include_image_language=en,null`;
+  },
 };
