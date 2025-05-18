@@ -4,12 +4,31 @@ const API_BASE = import.meta.env.VITE_API_BASE;
 export const TMDB = {
   API_KEY,
   BASE_URL: API_BASE,
+
+  // Discover
   get discoverMovies() {
     return `${API_BASE}/discover/movie?api_key=${API_KEY}`;
   },
+
+  get discoverShows() {
+    return `${API_BASE}/discover/tv?api_key=${API_KEY}`;
+  },
+
+  // Trending
+  get trendingMovies() {
+    return `${API_BASE}/trending/movie/week?api_key=${API_KEY}`;
+  },
+
+  get trendingShows() {
+    return `${API_BASE}/trending/tv/week?api_key=${API_KEY}`;
+  },
+
+  // Search
   getSearchMovies(query: string) {
     return `${API_BASE}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}`;
   },
+
+  // Details
   getMovieDetails(id: string | number) {
     return `${API_BASE}/movie/${id}?api_key=${API_KEY}&append_to_response=videos`;
   },

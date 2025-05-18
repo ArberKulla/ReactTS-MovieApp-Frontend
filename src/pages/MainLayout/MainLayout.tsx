@@ -12,12 +12,12 @@ const MainLayout: FunctionComponent = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden">
+    <div className="flex h-screen w-screen overflow-hidden bg-[#000000]">
       {/* Mobile Sidebar Toggle */}
       <div className="sm:hidden absolute top-4 left-4 z-50">
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="p-2 bg-white border rounded shadow-md"
+          className="p-2 border rounded shadow-md text-white bg-zinc-800"
         >
           <MenuOutlined />
         </button>
@@ -27,26 +27,26 @@ const MainLayout: FunctionComponent = () => {
       <aside
         className={`${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } sm:translate-x-0 transition-transform duration-200 fixed sm:static z-40 sm:z-10 bg-white w-56 h-full border-r shadow-md flex flex-col`}
+        } sm:translate-x-0 transition-transform duration-200 fixed sm:static z-40 sm:z-10 bg-[#121212] w-56 h-full flex flex-col`}
       >
-        <nav className="flex-grow py-6 px-4 space-y-4">
+        <nav className="flex-grow py-6 px-6 space-y-4">
           <Link
             to="/"
-            className="flex items-center space-x-2 text-gray-700 hover:text-black px-2 py-2 rounded hover:bg-gray-100 transition"
+            className="flex items-center space-x-2 text-gray-300 hover:text-white px-2 py-2 rounded transition"
           >
             <HomeOutlined />
             <span>Home</span>
           </Link>
           <Link
             to="/search"
-            className="flex items-center space-x-2 text-gray-700 hover:text-black px-2 py-2 rounded hover:bg-gray-100 transition"
+            className="flex items-center space-x-2 text-gray-300 hover:text-white px-2 py-2 rounded transition"
           >
             <SearchOutlined />
             <span>Search</span>
           </Link>
           <Link
             to="/explore"
-            className="flex items-center space-x-2 text-gray-700 hover:text-black px-2 py-2 rounded hover:bg-gray-100 transition"
+            className="flex items-center space-x-2 text-gray-300 hover:text-white px-2 py-2 rounded transition"
           >
             <PlayCircleOutlined />
             <span>Explore</span>
@@ -54,9 +54,9 @@ const MainLayout: FunctionComponent = () => {
         </nav>
       </aside>
 
-      {/* Content */}
-      <main className="flex-grow overflow-y-auto bg-gray-100 p-4 sm:p-6 md:p-8">
-        <div className="max-w-screen-xl mx-auto w-full">
+      {/* Main Content */}
+      <main className="flex-grow overflow-y-auto bg-[#121212] p-6 sm:p-8 md:p-10 ml-0 sm:ml-4">
+        <div className="max-w-screen-xl mx-auto w-full text-white">
           <Outlet />
         </div>
       </main>

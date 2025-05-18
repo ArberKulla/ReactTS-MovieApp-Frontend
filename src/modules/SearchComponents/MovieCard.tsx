@@ -1,0 +1,34 @@
+import React from "react";
+
+interface MovieCardProps {
+  movie: any;
+  onMouseEnter: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onMouseLeave: () => void;
+}
+
+const MovieCard: React.FC<MovieCardProps> = ({
+  movie,
+  onMouseEnter,
+  onMouseLeave,
+}) => {
+  return (
+    <div
+      key={movie.id}
+      onMouseEnter={(e) => onMouseEnter(e)}
+      onMouseLeave={onMouseLeave}
+      className="relative min-w-[150px] max-w-[150px] transition duration-200 transform hover:scale-105 m-2"
+    >
+      <img
+        src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
+        alt={movie.title}
+        className="h-[220px] w-full object-cover rounded-lg"
+      />
+      <div className="text-yellow-400 text-sm font-semibold absolute top-2 right-2 bg-zinc-900 px-1 py-1 leading-none pointer-events-none z-10 rounded-md">
+        <span>★ </span>
+        <span className="text-white">{movie.vote_average?.toFixed(1)}</span>
+      </div>
+    </div>
+  );
+};
+
+export default MovieCard;

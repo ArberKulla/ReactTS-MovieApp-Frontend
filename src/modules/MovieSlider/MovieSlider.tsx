@@ -3,16 +3,19 @@ import { useState, useRef, useEffect } from "react";
 import type { FC } from "react";
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
 import { FaS } from 'react-icons/fa6';
+import MoviePopup from '../SearchComponents/MoviePopup';
+import MovieCard from '../SearchComponents/MovieCard';
 
 interface MovieSliderProps {
   movies: any[];
+  title: string;
 }
 
-const POPUP_WIDTH = 256;
-const POPUP_HEIGHT = 200;
+const POPUP_WIDTH =256;
+const POPUP_HEIGHT = 256;
 const GAP = 4;
 
-const MovieSlider: FC<MovieSliderProps> = ({ movies }) => {
+const MovieSlider: FC<MovieSliderProps> = ({ movies, title}) => {
   const [hoveredMovie, setHoveredMovie] = useState<any | null>(null);
   const [popupPos, setPopupPos] = useState<{ top: number; left: number } | null>(null);
   const [isCardHovered, setIsCardHovered] = useState(false);
@@ -61,7 +64,7 @@ const MovieSlider: FC<MovieSliderProps> = ({ movies }) => {
     const viewportWidth = window.innerWidth;
 
     let left = cardRect.right + GAP;
-    let top = cardRect.top;
+    let top = cardRect.top - 25;
 
     if (cardRect.right + POPUP_WIDTH + GAP > viewportWidth) {
       if (cardRect.left - POPUP_WIDTH - GAP > 0) {
@@ -99,10 +102,10 @@ const MovieSlider: FC<MovieSliderProps> = ({ movies }) => {
 
 
   return (
-    <div className="relative py-4">
+    <div className="relative py-4 bg-[#121212]">
       {/* Header */}
       <div className="flex justify-between items-center px-4 mb-2">
-        <h2 className="text-xl font-bold text-black">Trending Movies</h2>
+        <h2 className="text-xl font-bold text-white">{title}</h2>
         <div className="space-x-2">
         <button
           onClick={scrollLeft}
@@ -123,59 +126,35 @@ const MovieSlider: FC<MovieSliderProps> = ({ movies }) => {
       </div>
 
       {/* Scrollable Container */}
-    <div
-      ref={scrollRef}
-      className="flex w-full hide-scrollbar"
-      style={{
-        overflowY: 'hidden',
-        overflowX: isCardHovered || isPopupHovered ? 'hidden' : 'auto',
-      }}
-    >
-
+      <div
+        ref={scrollRef}
+        className="flex w-full hide-scrollbar"
+        style={{
+          overflowY: 'hidden',
+          overflowX: isCardHovered || isPopupHovered ? 'hidden' : 'auto',
+        }}
+      >
         <div className="flex space-x-4 max-w-full">
           {movies.map((movie) => (
-            <div
+            <MovieCard
               key={movie.id}
+              movie={movie}
               onMouseEnter={(e) => handleCardMouseEnter(movie, e)}
               onMouseLeave={handleCardMouseLeave}
-              className="relative min-w-[150px] max-w-[150px] transition duration-200 transform hover:scale-105 m-2"
-            >
-              <img
-                src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
-                alt={movie.title}
-                className="h-[220px] w-full object-cover rounded-lg"
-              />
-              <div className="text-yellow-400 text-sm font-semibold absolute top-2 right-2 bg-zinc-900 px-1 py-1 leading-none pointer-events-none z-10 rounded-md">
-                <span>★ </span>
-                <span className="text-white">{movie.vote_average?.toFixed(1)}</span>
-              </div>
-            </div>
+            />
           ))}
         </div>
       </div>
 
       {/* Popup */}
       {(isCardHovered || isPopupHovered) && hoveredMovie && (
-        <div
+       <MoviePopup
+          movie={hoveredMovie}
+          top={popupPos?.top}
+          left={popupPos?.left}
           onMouseEnter={handlePopupMouseEnter}
           onMouseLeave={handlePopupMouseLeave}
-          className="fixed w-64 p-4 bg-zinc-800 text-white rounded-lg shadow-lg z-[9999] overflow-hidden"
-          style={{
-            top: popupPos?.top,
-            left: popupPos?.left,
-            height: POPUP_HEIGHT,
-            pointerEvents: "auto",
-            cursor: "default",
-          }}
-        >
-          <h3 className="text-lg font-semibold">{hoveredMovie.title}</h3>
-          <p className="text-sm mt-2 line-clamp-4 text-gray-300 overflow-hidden">
-            {hoveredMovie.overview}
-          </p>
-          <button className="mt-4 w-full bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded cursor-pointer">
-            Watch Now
-          </button>
-        </div>
+       />
       )}
     </div>
   );
