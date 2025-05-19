@@ -14,22 +14,32 @@ type Movie = {
 
 const IMAGE_BASE = "https://image.tmdb.org/t/p/original";
 
+// Hook për madhësinë e dritares
+const useWindowWidth = () => {
+  const [width, setWidth] = useState<number>(typeof window !== 'undefined' ? window.innerWidth : 0);
+
+  useEffect(() => {
+    const handleResize = () => setWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  return width;
+};
+
 const HeroSlider = ({ movies }: { movies: Movie[] }) => {
   const [current, setCurrent] = useState(0);
+  const windowWidth = useWindowWidth();
 
-  // Reset current index when movies change
   useEffect(() => {
     setCurrent(0);
   }, [movies]);
 
-  // Slide change interval
   useEffect(() => {
     if (movies.length === 0) return;
-
     const interval = setInterval(() => {
       setCurrent((prev) => (prev + 1) % movies.length);
     }, 7000);
-
     return () => clearInterval(interval);
   }, [movies]);
 
@@ -42,20 +52,24 @@ const HeroSlider = ({ movies }: { movies: Movie[] }) => {
   const date = movie.release_date || movie.first_air_date || "";
   const rating = movie.vote_average?.toFixed(1) ?? "N/A";
   const poster = `${IMAGE_BASE}${movie.poster_path}?v=${current}`;
-
   const backdrop = `${IMAGE_BASE}${movie.backdrop_path}`;
+
+  // Poster ka përmasa fikse, shfaqet vetëm në ekran >= 1024px
+  const POSTER_WIDTH = 360;
+  const MIN_SPACE_REQUIRED = 1024;
+  const showPoster = windowWidth >= MIN_SPACE_REQUIRED;
 
   return (
     <div className="relative w-full h-[60vh] text-white px-4 md:px-8">
       <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-lg">
-        {/* Background Image with transition */}
+        {/* Background Image */}
         <div
           key={backdrop}
           className="absolute inset-0 bg-cover bg-center transition-all duration-1000 blur-sm brightness-[.4]"
           style={{ backgroundImage: `url(${backdrop})` }}
         />
 
-        {/* Overlay Content */}
+        {/* Overlay */}
         <div className="relative z-10 flex items-center justify-between h-full max-w-7xl mx-auto px-6">
           {/* Left: Text */}
           <div className="max-w-xl space-y-4">
@@ -75,7 +89,6 @@ const HeroSlider = ({ movies }: { movies: Movie[] }) => {
               {movie.overview}
             </p>
             <div className="flex gap-3 mt-4">
-              {/* Watch Now Button */}
               <button className="flex items-center gap-2 px-5 py-2 rounded-full bg-white/10 text-white font-medium hover:bg-white/20 transition">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -86,25 +99,26 @@ const HeroSlider = ({ movies }: { movies: Movie[] }) => {
                 </svg>
                 Watch Now
               </button>
-
-              {/* Plus Button */}
               <button className="w-10 h-10 rounded-full flex items-center justify-center border border-white/30 text-white hover:bg-white/20 transition">
                 +
               </button>
             </div>
           </div>
 
-          {/* Right: Poster Image */}
-          <div className="hidden md:block w-[250px] md:w-[300px] lg:w-[360px] transform rotate-10  shadow-xl">
-            {movie.poster_path && (
+          {/* Right: Poster (Sticky-size, only visible on large screens) */}
+          {showPoster && movie.poster_path && (
+            <div
+              className="ml-8 shadow-xl transform rotate-10"
+              style={{ width: `${POSTER_WIDTH}px`, flexShrink: 0 }}
+            >
               <img
-                key={movie.poster_path}
                 src={poster}
                 alt={title}
-                className="w-full h-auto rounded-lg"
+                className="rounded-lg"
+                style={{ width: `${POSTER_WIDTH}px`, height: "auto" }}
               />
-            )}
-          </div>
+            </div>
+          )}
         </div>
 
         {/* Dots */}
