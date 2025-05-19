@@ -125,7 +125,7 @@ useEffect(() => {
 
   return (
 <div className="px-4 max-w-screen-xl mx-auto pt-8">
-  <h1 className="text-4xl font-bold text-white mb-10">Search</h1>
+  <h1 className="text-4xl font-bold text-white mb-10 ml-1">Search</h1>
 
   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-10">
     <input
