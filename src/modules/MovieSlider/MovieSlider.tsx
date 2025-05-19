@@ -8,13 +8,14 @@ import MovieCard from '../SearchComponents/MovieCard';
 interface MovieSliderProps {
   movies: any[];
   title: string;
+  type?: string;
 }
 
 const POPUP_WIDTH = 256;
 const POPUP_HEIGHT = 320;
 const GAP = 4;
 
-const MovieSlider: FC<MovieSliderProps> = ({ movies, title }) => {
+const MovieSlider: FC<MovieSliderProps> = ({ movies, title, type }) => {
   const [hoveredMovie, setHoveredMovie] = useState<any | null>(null);
   const [popupPos, setPopupPos] = useState<{ top: number; left: number } | null>(null);
   const [isCardHovered, setIsCardHovered] = useState(false);
@@ -145,6 +146,7 @@ const MovieSlider: FC<MovieSliderProps> = ({ movies, title }) => {
               movie={movie}
               onMouseEnter={(e) => handleCardMouseEnter(movie, e)}
               onMouseLeave={handleCardMouseLeave}
+              type={type}
             />
           ))}
         </div>
@@ -158,6 +160,7 @@ const MovieSlider: FC<MovieSliderProps> = ({ movies, title }) => {
           left={popupPos?.left}
           onMouseEnter={handlePopupMouseEnter}
           onMouseLeave={handlePopupMouseLeave}
+          type={type}
         />
       )}
     </div>

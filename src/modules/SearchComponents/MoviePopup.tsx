@@ -7,6 +7,7 @@ interface MoviePopupProps {
   left?: number;
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
+  type?: string;
 }
 
 const MoviePopup: React.FC<MoviePopupProps> = ({
@@ -15,6 +16,7 @@ const MoviePopup: React.FC<MoviePopupProps> = ({
   left,
   onMouseEnter,
   onMouseLeave,
+  type,
 }) => {
   const navigate = useNavigate();
   const fallbackImage = "/fallback.jpg"; // Place this in your /public folder
@@ -27,7 +29,7 @@ const MoviePopup: React.FC<MoviePopupProps> = ({
     : "No description available for this movie.";
 
   const handleWatchNow = () => {
-    navigate(`/watch/movie/${movie.id}`);
+    navigate(`/watch/${type}/${movie.id}`);
   };
 
   return (

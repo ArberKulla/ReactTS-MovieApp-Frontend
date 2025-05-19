@@ -20,6 +20,9 @@ interface SideInfoMovie {
   overview: string;
   genres: string[];
   cast: CastMember[];
+  type?: string;
+  seasons?: any;
+  season?: any;
 }
 
 export const SideInfoMovie: React.FC<SideInfoMovie> = ({
@@ -34,6 +37,9 @@ export const SideInfoMovie: React.FC<SideInfoMovie> = ({
   overview,
   genres,
   cast,
+  type,
+  seasons,
+  season
 }) => {
   return (
     <div
@@ -44,7 +50,7 @@ export const SideInfoMovie: React.FC<SideInfoMovie> = ({
       {showSidebar && (
         <div className="overflow-y-auto h-full w-full">
           {/* Sticky Header */}
-          <div className="sticky top-0 bg-zinc-900 z-30 flex justify-between items-center pb-4 pr-4 pl-2  border-zinc-700">
+          <div className="sticky top-0 bg-zinc-900 z-30 flex justify-between items-center pt-2 pb-4 pr-4 pl-2  border-zinc-700">
             <h2 className="text-xl font-bold">{title}</h2>
 
             <button
@@ -66,6 +72,9 @@ export const SideInfoMovie: React.FC<SideInfoMovie> = ({
             overview={overview}
             genres={genres}
             cast={cast}
+            type={type}
+            seasons={seasons}
+            season={season}
           />
         </div>
       )}

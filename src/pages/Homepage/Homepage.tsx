@@ -78,10 +78,12 @@ const Homepage: FunctionComponent = () => {
       <HeroSlider movies={[...filteredMovies, ...filteredShows].slice(0, 5)} />
 
       {/* Trending Movies */}
-      <MoviesSlider movies={filteredMovies} title="Trending Movies" />
+      <div className="pl-8">
+      <MoviesSlider movies={filteredMovies} title="Trending Movies" type="movie"/>
 
       {/* Trending Shows */}
-      <MoviesSlider movies={filteredShows} title="Trending Shows" />
+      <MoviesSlider movies={filteredShows} title="Trending Shows" type="tv"/>
+      </div>
 
       {/* Modal for Search */}
       {isSearchModalOpen && (

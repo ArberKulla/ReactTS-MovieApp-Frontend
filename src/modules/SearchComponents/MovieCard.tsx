@@ -5,17 +5,19 @@ interface MovieCardProps {
   movie: any;
   onMouseEnter: (e: React.MouseEvent<HTMLDivElement>) => void;
   onMouseLeave: () => void;
+  type?: string;
 }
 
 const MovieCard: React.FC<MovieCardProps> = ({
   movie,
   onMouseEnter,
   onMouseLeave,
+  type
 }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(`/watch/movie/${movie.id}`);
+    navigate(`/watch/${type}/${movie.id}`);
   };
 
   return (

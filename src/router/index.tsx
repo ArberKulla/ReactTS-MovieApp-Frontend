@@ -26,7 +26,7 @@ const Router = () =>
           element: <Homepage />,
         },
         {
-          path: "watch/movie/:id",
+          path: "watch/:type/:id",
           element: <MovieWatchPage />,
         },
       ],

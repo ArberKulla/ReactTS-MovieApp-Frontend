@@ -29,30 +29,24 @@ const MainLayout: FunctionComponent = () => {
       <div className="sm:hidden fixed top-0 left-0 right-0 bg-[#121212] z-50 flex justify-around py-3 border-b border-zinc-800">
         <Link
           to="/"
-          className={`flex flex-col items-center ${
-            location.pathname === "/" ? "text-blue-500" : "text-white"
-          } text-[15px]`}
+          className={`flex flex-col items-center text-white text-[15px]`}
         >
-          <HomeOutlined className="text-[18px]" />
-          <span className="text-xs">All</span>
+          <HomeOutlined className="text-[18px]" style={{ color: 'white'}}/>
+          <span className="text-xs text-white">All</span>
         </Link>
         <Link
           to="/movies"
-          className={`flex flex-col items-center ${
-            location.pathname === "/movies" ? "text-blue-500" : "text-white"
-          } text-[15px]`}
+          className={`flex flex-col items-center text-white text-[15px]`}
         >
-          <VideoCameraOutlined className="text-[18px]" />
-          <span className="text-xs">Movies</span>
+          <VideoCameraOutlined className="text-[18px]" style={{ color: 'white'}}/>
+          <span className="text-xs text-white">Movies</span>
         </Link>
         <Link
           to="/tv"
-          className={`flex flex-col items-center ${
-            location.pathname === "/tv" ? "text-blue-500" : "text-white"
-          } text-[15px]`}
+          className={`flex flex-col items-center text-white text-[15px]`}
         >
-          <DesktopOutlined className="text-[18px]" />
-          <span className="text-xs">TV</span>
+          <DesktopOutlined className="text-[18px]" style={{ color: 'white'}}/>
+          <span className="text-xs text-white">TV</span>
         </Link>
       </div>
 
@@ -69,15 +63,15 @@ const MainLayout: FunctionComponent = () => {
               to="/"
               className="flex items-center gap-3 px-3 py-2 text-[15px] font-semibold text-white rounded hover:bg-white/10 transition"
             >
-              <HomeOutlined className="text-[18px]" />
-              {!isCompact && <span>Home</span>}
+              <HomeOutlined className="text-[18px]" style={{ color: 'white'}}/>
+              {!isCompact && <span className="text-white">Home</span>}
             </Link>
             <Link
               to="/search"
               className="flex items-center gap-3 px-3 py-2 text-[15px] font-semibold text-white rounded hover:bg-white/10 transition"
             >
-              <SearchOutlined className="text-[18px]" />
-              {!isCompact && <span>Search</span>}
+              <SearchOutlined className="text-[18px]" style={{ color: 'white'}} />
+              {!isCompact && <span className="text-white">Search</span>}
             </Link>
           </div>
 
@@ -88,15 +82,15 @@ const MainLayout: FunctionComponent = () => {
                 to="/movies"
                 className="flex items-center gap-3 px-3 py-2 text-[15px] font-semibold text-white rounded hover:bg-white/10 transition"
               >
-                <VideoCameraOutlined className="text-[18px]" />
-                {!isCompact && <span>Movies</span>}
+                <VideoCameraOutlined className="text-[18px]" style={{ color: 'white'}}/>
+                {!isCompact && <span className="text-white">Movies</span>}
               </Link>
               <Link
                 to="/tv"
                 className="flex items-center gap-3 px-3 py-2 text-[15px] font-semibold text-white rounded hover:bg-white/10 transition"
               >
-                <DesktopOutlined className="text-[18px]" />
-                {!isCompact && <span>TV Shows</span>}
+                <DesktopOutlined className="text-[18px]" style={{ color: 'white'}}/>
+                {!isCompact && <span className="text-white">TV Shows</span>}
               </Link>
             </div>
 
@@ -105,15 +99,15 @@ const MainLayout: FunctionComponent = () => {
                 to="/history"
                 className="flex items-center gap-3 px-3 py-2 text-[15px] font-semibold text-white rounded hover:bg-white/10 transition"
               >
-                <ClockCircleOutlined className="text-[18px]" />
-                {!isCompact && <span>History</span>}
+                <ClockCircleOutlined className="text-[18px]" style={{ color: 'white'}}/>
+                {!isCompact && <span className="text-white">History</span>}
               </Link>
               <Link
                 to="/watchlist"
                 className="flex items-center gap-3 px-3 py-2 text-[15px] font-semibold text-white rounded hover:bg-white/10 transition"
               >
-                <HeartOutlined className="text-[18px]" />
-                {!isCompact && <span>WatchList</span>}
+                <HeartOutlined className="text-[18px]" style={{ color: 'white'}}/>
+                {!isCompact && <span className="text-white">WatchList</span>}
               </Link>
             </div>
           </div>

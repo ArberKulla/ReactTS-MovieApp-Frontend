@@ -28,18 +28,38 @@ export const TMDB = {
     return `${API_BASE}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}`;
   },
 
+  getSearchShows(query: string) {
+    return `${API_BASE}/search/tv?api_key=${API_KEY}&query=${encodeURIComponent(query)}`;
+  },
+
   // Movie Images (logos, backdrops, etc)
   getMovieImages(id: string | number) {
     return `${API_BASE}/movie/${id}/images?api_key=${API_KEY}&include_image_language=en,null`;
   },
 
-  
+  getShowImages(id: string | number) {
+    return `${API_BASE}/tv/${id}/images?api_key=${API_KEY}&include_image_language=en,null`;
+  },
+
+  // Movie Details
   getMovieDetails(id: string | number) {
     return `${API_BASE}/movie/${id}?api_key=${API_KEY}&append_to_response=credits,videos`;
   },
 
+  getShowDetails(id: string | number) {
+    return `${API_BASE}/tv/${id}?api_key=${API_KEY}&append_to_response=credits,videos`;
+  },
+
+  // Movie Recommendations
   getRecommendedMovies(id: string | number) {
     return `${API_BASE}/movie/${id}/recommendations?api_key=${API_KEY}`;
-  }
+  },
 
+  getRecommendedShows(id: string | number) {
+    return `${API_BASE}/tv/${id}/recommendations?api_key=${API_KEY}`;
+  },
+
+  getShowSeasonDetails(id: string | number, season: number) {
+  return `${API_BASE}/tv/${id}/season/${season}?api_key=${API_KEY}`;
+}
 };

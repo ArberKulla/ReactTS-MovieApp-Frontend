@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import TrailerCard from "./Trailer/TrailerCard";
 import TrailerModal from "./Trailer/TrailerModal";
 import TrailerSlider from "./Trailer/TrailerSlider";
@@ -12,11 +12,8 @@ import MovieSlider from "../MovieSlider/MovieSlider";
 import useIsMobile from "../../hooks/useMobile";
 import MovieDetails from "./MovieDetails";
 import type { CastMember } from "./MovieDetails";
-
-interface Source {
-  name: string;
-  url: (id: string) => string;
-}
+import type { Source } from "../../pages/MovieWatchPage/MovieWatchPage";
+import { useParams } from "react-router-dom";
 
 interface Video {
   id: string;
@@ -45,6 +42,11 @@ interface VideoPlayerProps {
   overview: string;
   genres: string[];
   cast: CastMember[];
+  type?: string;
+  seasonNumber?: number;
+  episodeNumber?: number;
+  seasons?: any[];
+  season?: any;
 }
 
 export const VideoPlayer: React.FC<VideoPlayerProps> = ({
@@ -65,37 +67,46 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   overview,
   genres,
   cast,
+  type,
+  seasonNumber,
+  episodeNumber,
+  seasons,
+  season
 }) => {
-  const MOVIEAPIURL = TMDB.getRecommendedMovies(id || "");
+  const MOVIEAPIURL =
+    type === "tv"
+      ? TMDB.getRecommendedShows(id || "")
+      : TMDB.getRecommendedMovies(id || "");
+
   const [modalVideo, setModalVideo] = useState<Video | null>(null);
   const state = useSelector((state: RootState) => state);
   const { recommendedMovies } = state.recommendedMovies;
   const dispatch = useAppDispatch();
   const isMobile = useIsMobile();
 
+  useEffect(() => {
+    dispatch(fetchRecommendedMovies(MOVIEAPIURL));
+  }, [dispatch, MOVIEAPIURL]);
 
-    useEffect(() => {
-      dispatch(fetchRecommendedMovies(MOVIEAPIURL));
-    }, [dispatch, MOVIEAPIURL]);
-  
-
-  // Show More Videos section only if there is at least one trailer or teaser
   const hasMoreVideos = trailers?.length > 0 || teasers?.length > 0;
 
   return (
     <div
       className={`flex flex-col transition-all duration-300 bg-zinc-900 ${
-        (!showSidebar || isMobile) ? "w-full" : "w-[calc(100%-360px)]"
+        !showSidebar || isMobile ? "w-full" : "w-[calc(100%-360px)]"
       }`}
-
     >
       <div className="flex-1 overflow-y-auto p-4">
         {/* Main Video */}
         <div className="w-full aspect-video rounded-lg overflow-hidden">
           <iframe
-            src={selectedSource.url(id || "")}
+            src={
+              type === "tv"
+                ? selectedSource.url(id || "", "tv", seasonNumber, episodeNumber)
+                : selectedSource.url(id || "", "movie")
+            }
             allowFullScreen
-            title="Movie Player"
+            title="Video Player"
             className="w-full h-full"
           />
         </div>
@@ -119,7 +130,6 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
                 </option>
               ))}
             </select>
-            {/* Custom arrow */}
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-white group-hover:text-gray-300">
               <svg
                 className="h-4 w-4 fill-current"
@@ -143,41 +153,36 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             overview={overview}
             genres={genres}
             cast={cast}
+            type={type}
+            seasons={seasons}
+            season={season}
           />
-          )}
-        
-        {/* More Videos Section */}
-        {hasMoreVideos && (
-        <TrailerSlider
-          trailers={trailers}
-          teasers={teasers}
-          modalVideo={modalVideo}
-          setModalVideo={setModalVideo}
-          backdrop_path={backdrop_path}
-        />
         )}
 
-        {/* Modal for Trailer/Teaser */}
-        {modalVideo && (
-          <TrailerModal
-            video={modalVideo}
-            onClose={() => setModalVideo(null)}
+        {hasMoreVideos && (
+          <TrailerSlider
+            trailers={trailers}
+            teasers={teasers}
+            modalVideo={modalVideo}
+            setModalVideo={setModalVideo}
+            backdrop_path={backdrop_path}
           />
+        )}
+
+        {modalVideo && (
+          <TrailerModal video={modalVideo} onClose={() => setModalVideo(null)} />
         )}
 
         {recommendedMovies && (
-          console.log(recommendedMovies?.results),
           <MovieSlider
             movies={recommendedMovies?.results || []}
-            title="Recommended Movies"
+            title={type === "tv" ? "Recommended Shows" : "Recommended Movies"}
+            type={type}
           />
         )}
 
-        {/* Footer */}
-        <div className="pb-20">
-        </div>
+        <div className="pb-20"></div>
       </div>
     </div>
   );
 };
-
