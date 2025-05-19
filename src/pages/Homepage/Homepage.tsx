@@ -49,7 +49,7 @@ const Homepage: FunctionComponent = () => {
     <div className="space-y-10 pt-6">
       {/* Search Bar */}
       <div className="w-full px-4 sm:px-6">
-        <div className="max-w-screen-xl mx-auto flex justify-start">
+        <div className="max-w-screen-xl mx-auto flex justify-center">
           <div className="relative w-full max-w-sm">
             <input
               type="text"

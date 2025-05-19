@@ -4,6 +4,7 @@ import 'slick-carousel/slick/slick-theme.css';
 import { useRoutes } from "react-router-dom";
 import Loadable from "./Loadable";
 import { lazy } from "react";
+import SearchPage from '../pages/SearchPage/SearchPage';
 
 // Error routes
 const Error404Page = Loadable(lazy(() => import("../pages/NotFound/NotFound")));
@@ -28,6 +29,10 @@ const Router = () =>
         {
           path: "watch/:type/:id",
           element: <MovieWatchPage />,
+        },
+        {
+          path: "search",
+          element: <SearchPage />,
         },
       ],
     },
