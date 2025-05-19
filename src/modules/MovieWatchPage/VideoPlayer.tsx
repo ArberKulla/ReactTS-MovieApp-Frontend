@@ -9,6 +9,9 @@ import type { RootState } from "../../data/store";
 import { fetchMovies } from "../../data/moviesSlice";
 import { fetchRecommendedMovies } from "../../data/moviesRecommendedSlice";
 import MovieSlider from "../MovieSlider/MovieSlider";
+import useIsMobile from "../../hooks/useMobile";
+import MovieDetails from "./MovieDetails";
+import type { CastMember } from "./MovieDetails";
 
 interface Source {
   name: string;
@@ -33,6 +36,15 @@ interface VideoPlayerProps {
   trailers: Video[];
   teasers: Video[];
   backdrop_path?: string;
+  title: string;
+  poster: string;
+  rating?: number | string;
+  status: string;
+  production: string;
+  release: string;
+  overview: string;
+  genres: string[];
+  cast: CastMember[];
 }
 
 export const VideoPlayer: React.FC<VideoPlayerProps> = ({
@@ -43,13 +55,24 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   showSidebar,
   trailers,
   teasers,
-  backdrop_path
+  backdrop_path,
+  title,
+  poster,
+  rating,
+  status,
+  production,
+  release,
+  overview,
+  genres,
+  cast,
 }) => {
   const MOVIEAPIURL = TMDB.getRecommendedMovies(id || "");
   const [modalVideo, setModalVideo] = useState<Video | null>(null);
   const state = useSelector((state: RootState) => state);
   const { recommendedMovies } = state.recommendedMovies;
   const dispatch = useAppDispatch();
+  const isMobile = useIsMobile();
+
 
     useEffect(() => {
       dispatch(fetchRecommendedMovies(MOVIEAPIURL));
@@ -62,8 +85,9 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   return (
     <div
       className={`flex flex-col transition-all duration-300 bg-zinc-900 ${
-        showSidebar ? "w-[calc(100%-360px)]" : "w-full"
+        (!showSidebar || isMobile) ? "w-full" : "w-[calc(100%-360px)]"
       }`}
+
     >
       <div className="flex-1 overflow-y-auto p-4">
         {/* Main Video */}
@@ -107,6 +131,20 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             </div>
           </div>
         </div>
+
+        {isMobile && (
+          <MovieDetails
+            poster={poster}
+            title={title}
+            rating={rating}
+            status={status}
+            production={production}
+            release={release}
+            overview={overview}
+            genres={genres}
+            cast={cast}
+          />
+          )}
         
         {/* More Videos Section */}
         {hasMoreVideos && (

@@ -8,6 +8,7 @@ import { fetchMovies } from "../../data/moviesSlice";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { SideInfoMovie } from "../../modules/MovieWatchPage/SideInfoMovie"; 
 import { VideoPlayer } from "../../modules/MovieWatchPage/VideoPlayer";
+import useIsMobile from "../../hooks/useMobile";
 
 const sources = [
   { name: "Vidsrc", url: (id: string) => `https://vidsrc.to/embed/movie/${id}` },
@@ -23,6 +24,7 @@ const MovieWatchPage = () => {
   const { movies } = state.movies;
   const [currentMovie, setCurrentMovie] = useState<any>(null);
   const MOVIEAPIURL = TMDB.getMovieDetails(id || "");
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     dispatch(fetchMovies(MOVIEAPIURL));
@@ -73,9 +75,19 @@ const MovieWatchPage = () => {
           trailers={trailers}
           teasers={teasers}
           backdrop_path={backdrop_path}
-      />
+          title={title}
+          poster={poster}
+          rating={rating}
+          overview={overview}
+          status={status}
+          production={production}
+          release={release}
+          genres={genres}
+          cast={cast}
+        />
 
       {/* Sidebar */}
+      {!isMobile && (
       <SideInfoMovie
         title={title}
         poster={poster}
@@ -89,9 +101,10 @@ const MovieWatchPage = () => {
         showSidebar={showSidebar}
         setShowSidebar={setShowSidebar}
       />
+      )}
 
       {/* Sidebar Toggle Button */}
-      {!showSidebar && (
+      {!showSidebar && !isMobile && (
         <div
           onClick={() => setShowSidebar(true)}
           className="fixed top-0 right-0 h-full w-12 z-50 cursor-pointer group"
