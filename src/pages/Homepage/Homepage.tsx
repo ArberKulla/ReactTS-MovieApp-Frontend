@@ -14,8 +14,7 @@ const Homepage: FunctionComponent = () => {
   const dispatch = useAppDispatch();
   const { movies } = useSelector((state: RootState) => state.movies);
   const { shows } = useSelector((state: RootState) => state.shows);
-  const {searchResults} = useSelector((state: RootState) => state.searchQuery);
-
+  const { searchResults } = useSelector((state: RootState) => state.searchQuery);
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchModalOpen, setSearchModalOpen] = useState(false);
 
@@ -28,10 +27,10 @@ const Homepage: FunctionComponent = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (searchQuery.length == 0) {
+    if (searchQuery.length < 3) {
       return;
     }
-    dispatch(searchWithQuery(TMDB.getSearchMovies(searchQuery)));
+    dispatch(searchWithQuery(TMDB.getSearchMoviesAndShows(searchQuery)));
   }, [searchQuery]);
 
   // Mbyll modalin me Escape
@@ -45,15 +44,8 @@ const Homepage: FunctionComponent = () => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  const filteredMovies = (movies?.results || []).filter((movie) =>
-    movie.title?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  const filteredShows = (shows?.results || []).filter((show) =>
-    show.name?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
   return (
+    console.log(searchResults),
     <div className="space-y-10 pt-6">
       {/* Search Bar */}
       <div className="w-full px-4 sm:px-6">
@@ -85,14 +77,14 @@ const Homepage: FunctionComponent = () => {
       </div>
 
       {/* Hero Slider */}
-      <HeroSlider movies={[...filteredMovies, ...filteredShows].slice(0, 5)} />
+      <HeroSlider movies={[...(movies?.results || []), ...(shows?.results || [])].slice(0, 5)} />
 
       {/* Trending Movies */}
       <div className="pl-8">
-      <MoviesSlider movies={filteredMovies} title="Trending Movies" type="movie"/>
+      <MoviesSlider movies={movies?.results || []}  title="Trending Movies" type="movie"/>
 
       {/* Trending Shows */}
-      <MoviesSlider movies={filteredShows} title="Trending Shows" type="tv"/>
+      <MoviesSlider movies={shows?.results || []}  title="Trending Shows" type="tv"/>
       </div>
 
       {/* Modal for Search */}
