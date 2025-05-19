@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { useAppDispatch } from "../../hooks/dispatch";
 import { fetchMovies } from "../../data/moviesSlice";
 import { fetchShows } from "../../data/showsSlice";
+import {searchWithQuery} from "../../data/searchQuery";
 import type { FunctionComponent } from "react";
 import type { RootState } from "../../data/store";
 import { TMDB } from "../../configs/tmdb";
@@ -13,6 +14,8 @@ const Homepage: FunctionComponent = () => {
   const dispatch = useAppDispatch();
   const { movies } = useSelector((state: RootState) => state.movies);
   const { shows } = useSelector((state: RootState) => state.shows);
+  const {searchResults} = useSelector((state: RootState) => state.searchQuery);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchModalOpen, setSearchModalOpen] = useState(false);
 
@@ -23,6 +26,13 @@ const Homepage: FunctionComponent = () => {
     dispatch(fetchMovies(MOVIEAPIURL));
     dispatch(fetchShows(SHOWAPIURL));
   }, [dispatch]);
+
+  useEffect(() => {
+    if (searchQuery.length == 0) {
+      return;
+    }
+    dispatch(searchWithQuery(TMDB.getSearchMovies(searchQuery)));
+  }, [searchQuery]);
 
   // Mbyll modalin me Escape
   useEffect(() => {

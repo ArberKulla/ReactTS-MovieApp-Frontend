@@ -61,5 +61,9 @@ export const TMDB = {
 
   getShowSeasonDetails(id: string | number, season: number) {
   return `${API_BASE}/tv/${id}/season/${season}?api_key=${API_KEY}`;
-}
+  },
+
+  getSearchMoviesAndShows(query: string) {
+    return `${API_BASE}/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}`;
+  }
 };
