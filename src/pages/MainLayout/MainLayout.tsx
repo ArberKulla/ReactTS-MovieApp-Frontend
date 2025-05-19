@@ -115,7 +115,7 @@ const MainLayout: FunctionComponent = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-grow overflow-y-auto bg-zinc-900 pt-14 sm:pt-0">
+      <main className="flex-grow overflow-y-auto bg-zinc-900 pt-14 sm:pt-0" id="scroll-container">
         <div className="max-w-screen-xl w-full text-white">
           <Outlet />
         </div>

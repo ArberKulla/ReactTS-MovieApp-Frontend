@@ -5,7 +5,7 @@ interface MoviesApiResponse {
 }
 
 interface MoviesState {
-  movies: MoviesApiResponse | null;
+  movies: any | null;
   fetchStatus: 'idle' | 'loading' | 'success' | 'error';
 }
 

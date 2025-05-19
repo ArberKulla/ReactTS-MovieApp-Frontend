@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 interface MovieCardProps {
@@ -15,10 +15,14 @@ const MovieCard: React.FC<MovieCardProps> = ({
   type
 }) => {
   const navigate = useNavigate();
-
+  const [isLoaded, setIsLoaded] = useState(false);
   const handleClick = () => {
     navigate(`/watch/${type}/${movie.id}`);
   };
+
+  const imageUrl = movie.poster_path
+    ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
+    : "/fallback.jpg"; // fallback for broken path
 
   return (
     <div
@@ -29,8 +33,10 @@ const MovieCard: React.FC<MovieCardProps> = ({
       className="relative min-w-[150px] max-w-[150px] transition duration-200 transform hover:scale-105 mr-3 cursor-pointer"
     >
       <img
-        src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
+        src={isLoaded ? imageUrl : "/fallback.jpg"}
         alt={movie.title}
+        onLoad={() => setIsLoaded(true)}
+        onError={() => setIsLoaded(true)} // prevent infinite fallback loop if broken
         className="h-[220px] w-full object-cover rounded-lg"
       />
       <div className="text-yellow-400 text-sm font-semibold absolute top-2 right-2 bg-zinc-900 px-1 py-1 leading-none pointer-events-none z-10 rounded-md">
@@ -42,4 +48,3 @@ const MovieCard: React.FC<MovieCardProps> = ({
 };
 
 export default MovieCard;
-
