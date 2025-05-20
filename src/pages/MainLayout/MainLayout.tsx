@@ -79,14 +79,14 @@ const MainLayout: FunctionComponent = () => {
           <div className="flex flex-col justify-between flex-grow bg-[#181818] rounded-xl py-3 px-2">
             <div className="space-y-2">
               <Link
-                to="/movies"
+                to="/explore/movies"
                 className="flex items-center gap-3 px-3 py-2 text-[15px] font-semibold text-white rounded hover:bg-white/10 transition"
               >
                 <VideoCameraOutlined className="text-[18px]" style={{ color: 'white'}}/>
                 {!isCompact && <span className="text-white">Movies</span>}
               </Link>
               <Link
-                to="/tv"
+                to="/explore/tv"
                 className="flex items-center gap-3 px-3 py-2 text-[15px] font-semibold text-white rounded hover:bg-white/10 transition"
               >
                 <DesktopOutlined className="text-[18px]" style={{ color: 'white'}}/>

@@ -5,6 +5,8 @@ import { useRoutes } from "react-router-dom";
 import Loadable from "./Loadable";
 import { lazy } from "react";
 import SearchPage from '../pages/SearchPage/SearchPage';
+import MovieSearchPage from '../pages/SearchPage/MovieSearchPage';
+import ShowSearchPage from '../pages/SearchPage/ShowSearchPage';
 
 // Error routes
 const Error404Page = Loadable(lazy(() => import("../pages/NotFound/NotFound")));
@@ -34,6 +36,14 @@ const Router = () =>
           path: "search",
           element: <SearchPage />,
         },
+        {
+          path: "explore/movies",
+          element: <MovieSearchPage />,
+        },
+        {
+          path: "explore/tv",
+          element: <ShowSearchPage />,
+        },    
       ],
     },
     {
