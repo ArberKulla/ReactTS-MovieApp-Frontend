@@ -3,18 +3,24 @@ import { useSelector } from "react-redux";
 import { useAppDispatch } from "../../hooks/dispatch";
 import { fetchMovies } from "../../data/moviesSlice";
 import { fetchShows } from "../../data/showsSlice";
-import {searchWithQuery} from "../../data/searchQuery";
+import { searchWithQuery } from "../../data/searchQuery";
 import type { FunctionComponent } from "react";
 import type { RootState } from "../../data/store";
 import { TMDB } from "../../configs/tmdb";
 import MoviesSlider from "../../modules/MovieSlider/MovieSlider";
 import HeroSlider from "./HeroSlider";
+import SearchBar from "./SearchBar";
+import { useNavigate } from "react-router-dom";
+import { FilterOutlined } from "@ant-design/icons";
 
 const Homepage: FunctionComponent = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const { movies } = useSelector((state: RootState) => state.movies);
   const { shows } = useSelector((state: RootState) => state.shows);
-  const { searchResults } = useSelector((state: RootState) => state.searchQuery);
+  const { searchResults } = useSelector(
+    (state: RootState) => state.searchQuery
+  );
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchModalOpen, setSearchModalOpen] = useState(false);
 
@@ -27,13 +33,10 @@ const Homepage: FunctionComponent = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (searchQuery.length < 3) {
-      return;
-    }
+    if (searchQuery.length < 3) return;
     dispatch(searchWithQuery(TMDB.getSearchMoviesAndShows(searchQuery)));
   }, [searchQuery]);
 
-  // Mbyll modalin me Escape
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -44,117 +47,115 @@ const Homepage: FunctionComponent = () => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
+  const handleResultClick = (result: any) => {
+    if (result.media_type === "tv") {
+      navigate(`/watch/tv/${result.id}`);
+    } else if (result.media_type === "movie") {
+      navigate(`/watch/movie/${result.id}`);
+    }
+    setSearchModalOpen(false);
+  };
+
   return (
-    console.log(searchResults),
     <div className="space-y-10 pt-6">
       {/* Search Bar */}
       <div className="w-full px-4 sm:px-6">
-        <div className="max-w-screen-xl mx-auto flex justify-center">
-          <div className="relative w-full max-w-sm">
-            <input
-              type="text"
-              placeholder="Search..."
-              onFocus={() => setSearchModalOpen(true)}
-              readOnly
-              className="w-full py-2 pl-10 pr-4 rounded-lg bg-zinc-800 text-white border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm cursor-pointer"
-            />
-            <svg
-              className="absolute left-3 top-2.5 h-4 w-4 text-gray-400"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"
-              />
-            </svg>
-          </div>
+        <div className="max-w-screen-xl mx-auto flex justify-between items-center">
+          <SearchBar
+            value={searchQuery}
+            onChange={setSearchQuery}
+            onFocus={() => setSearchModalOpen(true)}
+            readOnly
+          />
+          <FilterOutlined
+            style={{
+              fontSize: "24px",
+              color: "white",
+              cursor: "pointer",
+              marginLeft: 12,
+            }}
+            onClick={() => {
+              // Add your filter logic here or open a filter modal
+              console.log("Filter icon clicked");
+            }}
+          />
         </div>
       </div>
 
       {/* Hero Slider */}
-      <HeroSlider movies={[...(movies?.results || []), ...(shows?.results || [])].slice(0, 5)} />
+      <HeroSlider
+        movies={[...(movies?.results || []), ...(shows?.results || [])].slice(
+          0,
+          5
+        )}
+      />
 
-      {/* Trending Movies */}
+      {/* Trending Movies and Shows */}
       <div className="pl-8">
-      <MoviesSlider movies={movies?.results || []}  title="Trending Movies" type="movie"/>
-
-      {/* Trending Shows */}
-      <MoviesSlider movies={shows?.results || []}  title="Trending Shows" type="tv"/>
+        <MoviesSlider
+          movies={movies?.results || []}
+          title="Trending Movies"
+          type="movie"
+        />
+        <MoviesSlider
+          movies={shows?.results || []}
+          title="Trending Shows"
+          type="tv"
+        />
       </div>
 
-      {/* Modal for Search */}
+      {/* Search Modal */}
       {isSearchModalOpen && (
         <>
-          {/* Overlay i plotë */}
           <div
             className="fixed inset-0 w-screen h-screen bg-black/40 backdrop-blur-sm z-40"
             onClick={() => setSearchModalOpen(false)}
           />
-
-          {/* Vetëm Search Bar i qendërzuar */}
           <div className="fixed top-1/2 left-1/2 z-50 w-full max-w-xl px-4 transform -translate-x-1/2 -translate-y-1/2">
-            <div className="relative">
-              <input
-                type="text"
-                autoFocus
-                placeholder="What do you wanna Watch?"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full py-3 pl-10 pr-4 rounded-lg bg-zinc-800 text-white border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+            <div className="flex justify-between items-center mb-2">
+              <h2 className="text-white text-xl font-bold">Search</h2>
+              <FilterOutlined
+                className="text-white cursor-pointer"
+                style={{ fontSize: 24 }}
+                onClick={() => {
+                  // Add your filter logic or modal here
+                  console.log("Filter icon clicked");
+                }}
               />
-              <svg
-                className="absolute left-3 top-3.5 h-4 w-4 text-gray-400"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"
-                />
-              </svg>
             </div>
+            <SearchBar value={searchQuery} onChange={setSearchQuery} />
+            {searchResults.length > 0 && (
+              <div className="mt-4 max-h-[400px] overflow-y-auto rounded-lg bg-[#111] p-4 space-y-4">
+                {searchResults.map((result: any) => (
+                  <div
+                    key={result.id}
+                    className="flex items-center gap-4 p-2 rounded-md hover:bg-[#222] cursor-pointer"
+                    onClick={() => handleResultClick(result)}
+                  >
+                    <img
+                      src={`https://image.tmdb.org/t/p/w92${result.poster_path}`}
+                      alt={result.title || result.name}
+                      className="w-[60px] h-[90px] object-cover rounded"
+                    />
+                    <div className="text-white">
+                      <h3 className="text-md font-semibold">
+                        {result.title || result.name}
+                      </h3>
+                      <p className="text-sm text-gray-400 flex items-center gap-2">
+                        <span>⭐ {result.vote_average?.toFixed(1)}</span>
+                        <span>{result.media_type?.toUpperCase() || "N/A"}</span>
+                        <span>
+                          {result.release_date?.slice(0, 4) ||
+                            result.first_air_date?.slice(0, 4)}
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </>
-      )}
-
-      {/* Kur modalja nuk hapet, trego butonin / ndonjë mënyrë për ta hapur */}
-      {!isSearchModalOpen && (
-        <div className="w-full px-4 sm:px-6">
-          <div className="max-w-screen-xl mx-auto flex justify-start">
-            <div className="relative w-full max-w-sm">
-              <input
-                type="text"
-                placeholder="Search..."
-                onFocus={() => setSearchModalOpen(true)}
-                readOnly
-                className="w-full py-2 pl-10 pr-4 rounded-lg bg-zinc-800 text-white border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm cursor-pointer"
-              />
-              <svg
-                className="absolute left-3 top-2.5 h-4 w-4 text-gray-400"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"
-                />
-              </svg>
-            </div>
-          </div>
-        </div>
       )}
     </div>
   );
