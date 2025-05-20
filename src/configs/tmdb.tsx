@@ -7,29 +7,41 @@ export const TMDB = {
 
   // Discover
   get discoverMovies() {
-    return `${API_BASE}/discover/movie?api_key=${API_KEY}`;
+    return `${API_BASE}/discover/movie?api_key=${API_KEY}&include_adult=false`;
+  },
+
+  getsearchDiscoverMovies(query: string) {
+    return `${API_BASE}/discover/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}&include_adult=false`;
   },
 
   get discoverShows() {
-    return `${API_BASE}/discover/tv?api_key=${API_KEY}`;
+    return `${API_BASE}/discover/tv?api_key=${API_KEY}&include_adult=false`;
+  },
+
+  getsearchDiscoverShows(query: string) {
+    return `${API_BASE}/discover/tv?api_key=${API_KEY}&query=${encodeURIComponent(query)}&include_adult=false`;
   },
 
   // Trending
   get trendingMovies() {
-    return `${API_BASE}/trending/movie/week?api_key=${API_KEY}`;
+    return `${API_BASE}/trending/movie/week?api_key=${API_KEY}&include_adult=false`;
   },
 
   get trendingShows() {
-    return `${API_BASE}/trending/tv/week?api_key=${API_KEY}`;
+    return `${API_BASE}/trending/tv/week?api_key=${API_KEY}&include_adult=false`;
   },
 
   // Search
   getSearchMovies(query: string) {
-    return `${API_BASE}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}`;
+    return `${API_BASE}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}&include_adult=false`;
   },
 
   getSearchShows(query: string) {
-    return `${API_BASE}/search/tv?api_key=${API_KEY}&query=${encodeURIComponent(query)}`;
+    return `${API_BASE}/search/tv?api_key=${API_KEY}&query=${encodeURIComponent(query)}&include_adult=false`;
+  },
+
+  getSearchMoviesAndShows(query: string) {
+    return `${API_BASE}/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}&include_adult=false`;
   },
 
   // Movie Images (logos, backdrops, etc)
@@ -60,10 +72,6 @@ export const TMDB = {
   },
 
   getShowSeasonDetails(id: string | number, season: number) {
-  return `${API_BASE}/tv/${id}/season/${season}?api_key=${API_KEY}`;
-  },
-
-  getSearchMoviesAndShows(query: string) {
-    return `${API_BASE}/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}`;
+    return `${API_BASE}/tv/${id}/season/${season}?api_key=${API_KEY}`;
   }
 };
