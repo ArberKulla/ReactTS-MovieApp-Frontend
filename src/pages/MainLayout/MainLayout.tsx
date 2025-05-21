@@ -96,13 +96,6 @@ const MainLayout: FunctionComponent = () => {
 
             <div className="space-y-2 pt-6">
               <Link
-                to="/history"
-                className="flex items-center gap-3 px-3 py-2 text-[15px] font-semibold text-white rounded hover:bg-white/10 transition"
-              >
-                <ClockCircleOutlined className="text-[18px]" style={{ color: 'white'}}/>
-                {!isCompact && <span className="text-white">History</span>}
-              </Link>
-              <Link
                 to="/watchlist"
                 className="flex items-center gap-3 px-3 py-2 text-[15px] font-semibold text-white rounded hover:bg-white/10 transition"
               >

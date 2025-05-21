@@ -11,7 +11,8 @@ import MoviesSlider from "../../modules/MovieSlider/MovieSlider";
 import HeroSlider from "./HeroSlider";
 import SearchBar from "./SearchBar";
 import { useNavigate } from "react-router-dom";
-import { FilterOutlined } from "@ant-design/icons";
+import { LogoutOutlined } from "@ant-design/icons";
+import LoginModal from "../LogOut/Logout";
 
 const Homepage: FunctionComponent = () => {
   const dispatch = useAppDispatch();
@@ -23,6 +24,7 @@ const Homepage: FunctionComponent = () => {
   );
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchModalOpen, setSearchModalOpen] = useState(false);
+  const [isLoginModalOpen, setLoginModalOpen] = useState(false); // <-- added
 
   const MOVIEAPIURL = TMDB.trendingMovies;
   const SHOWAPIURL = TMDB.trendingShows;
@@ -41,6 +43,7 @@ const Homepage: FunctionComponent = () => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setSearchModalOpen(false);
+        setLoginModalOpen(false);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
@@ -57,7 +60,7 @@ const Homepage: FunctionComponent = () => {
   };
 
   return (
-    <div className="space-y-10 pt-6">
+    <div className="space-y-10 pt-6 relative">
       {/* Search Bar */}
       <div className="w-full px-4 sm:px-6">
         <div className="max-w-screen-xl mx-auto flex justify-between items-center">
@@ -67,7 +70,7 @@ const Homepage: FunctionComponent = () => {
             onFocus={() => setSearchModalOpen(true)}
             readOnly
           />
-          <FilterOutlined
+          <LogoutOutlined
             style={{
               fontSize: "24px",
               color: "white",
@@ -75,8 +78,7 @@ const Homepage: FunctionComponent = () => {
               marginLeft: 12,
             }}
             onClick={() => {
-              // Add your filter logic here or open a filter modal
-              console.log("Filter icon clicked");
+              setLoginModalOpen(true);
             }}
           />
         </div>
@@ -114,12 +116,15 @@ const Homepage: FunctionComponent = () => {
           <div className="fixed top-1/2 left-1/2 z-50 w-full max-w-xl px-4 transform -translate-x-1/2 -translate-y-1/2">
             <div className="flex justify-between items-center mb-2">
               <h2 className="text-white text-xl font-bold">Search</h2>
-              <FilterOutlined
-                className="text-white cursor-pointer"
-                style={{ fontSize: 24 }}
+              <LogoutOutlined
+                style={{
+                  fontSize: "24px",
+                  color: "white",
+                  cursor: "pointer",
+                  marginLeft: 12,
+                }}
                 onClick={() => {
-                  // Add your filter logic or modal here
-                  console.log("Filter icon clicked");
+                  setLoginModalOpen(true);
                 }}
               />
             </div>
@@ -155,6 +160,13 @@ const Homepage: FunctionComponent = () => {
               </div>
             )}
           </div>
+        </>
+      )}
+
+      {/* ✅ Login Modal */}
+      {isLoginModalOpen && (
+        <>
+          <LoginModal onClose={() => setLoginModalOpen(false)} />
         </>
       )}
     </div>
