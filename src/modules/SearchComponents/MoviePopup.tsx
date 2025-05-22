@@ -1,5 +1,10 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { Tooltip } from "antd";
+import { HeartFilled } from "@ant-design/icons";
+import axios from "axios";
+import { useAuth } from "../../contexts/AuthContext";
+import toast from "react-hot-toast"; // <-- Import toast
 
 interface MoviePopupProps {
   movie: any;
@@ -19,7 +24,9 @@ const MoviePopup: React.FC<MoviePopupProps> = ({
   type,
 }) => {
   const navigate = useNavigate();
-  const fallbackImage = "/fallback.jpg"; // Place this in your /public folder
+  const { token } = useAuth();
+
+  const fallbackImage = "/fallback.jpg";
   const imageSrc = movie.backdrop_path
     ? `https://image.tmdb.org/t/p/w500/${movie.backdrop_path}`
     : fallbackImage;
@@ -30,6 +37,51 @@ const MoviePopup: React.FC<MoviePopupProps> = ({
 
   const handleWatchNow = () => {
     navigate(`/watch/${type}/${movie.id}`);
+  };
+
+  const handleAddToWatchlist = async () => {
+    if (!token) {
+      toast.error("You must be logged in to add to your watchlist.");
+      return;
+    }
+
+    const payload = {
+      movieId: movie.id.toString(),
+      title: movie.title || "Untitled",
+      description: movie.overview?.slice(0, 500) || "",
+      rating: parseFloat(movie.vote_average?.toFixed(1) || "0"),
+      posterUrl: movie.poster_path
+        ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
+        : "",
+      backdropUrl: movie.backdrop_path
+        ? `https://image.tmdb.org/t/p/w500/${movie.backdrop_path}`
+        : "",
+    };
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/watchlists/watchlist",
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      toast.success("Movie added to watchlist!");
+      console.log("Added to watchlist:", response.data);
+    } catch (error: any) {
+      if (
+        error.response?.status === 409 ||
+        error.response?.data?.includes("already")
+      ) {
+        toast.error("Movie is already in your watchlist.");
+      } else {
+        toast.error("Failed to add movie. Please try again.");
+      }
+      console.error("Failed to add to watchlist:", error);
+    }
   };
 
   return (
@@ -59,14 +111,26 @@ const MoviePopup: React.FC<MoviePopupProps> = ({
         <p className="text-sm mt-1 text-gray-300 line-clamp-4">{overview}</p>
       </div>
 
-      {/* Bottom - Button */}
-      <div className="px-4 pb-4">
+      {/* Bottom - Buttons */}
+      <div className="px-4 pb-4 flex items-center gap-2">
         <button
           onClick={handleWatchNow}
-          className="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded cursor-pointer"
+          className="flex-1 bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded cursor-pointer"
         >
           Watch Now
         </button>
+
+        <Tooltip
+          title="Add to Watchlist"
+          getPopupContainer={(trigger) => trigger.parentElement!}
+        >
+          <button
+            onClick={handleAddToWatchlist}
+            className="w-9 h-9 flex items-center justify-center rounded-full border-2 border-white hover:border-white bg-transparent hover:bg-white/10 text-red-600"
+          >
+            <HeartFilled />
+          </button>
+        </Tooltip>
       </div>
     </div>
   );
