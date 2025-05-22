@@ -40,7 +40,7 @@ const Homepage: FunctionComponent = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (searchQuery.length < 3) return;
+    if (searchQuery.length < 1) return;
     dispatch(searchWithQuery(TMDB.getSearchMoviesAndShows(searchQuery)));
   }, [searchQuery]);
 
