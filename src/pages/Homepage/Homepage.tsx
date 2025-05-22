@@ -8,23 +8,28 @@ import type { FunctionComponent } from "react";
 import type { RootState } from "../../data/store";
 import { TMDB } from "../../configs/tmdb";
 import MoviesSlider from "../../modules/MovieSlider/MovieSlider";
-import HeroSlider from "./HeroSlider";
-import SearchBar from "./SearchBar";
+import HeroSlider from "../../modules/Home/HeroSlider";
+import SearchBar from "../../modules/Home/SearchBar";
 import { useNavigate } from "react-router-dom";
-import { LogoutOutlined } from "@ant-design/icons";
-import LoginModal from "../LogOut/Logout";
+import { LogoutOutlined, UserOutlined } from "@ant-design/icons";
+import LoginModal from "../../modules/Authenticate/Login";
+import SignupModal from "../../modules/Authenticate/SignUp";
+import { useAuth } from "../../contexts/AuthContext"; // <-- adjust path to your AuthProvider
 
 const Homepage: FunctionComponent = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
   const { movies } = useSelector((state: RootState) => state.movies);
   const { shows } = useSelector((state: RootState) => state.shows);
-  const { searchResults } = useSelector(
-    (state: RootState) => state.searchQuery
-  );
+  const { searchResults } = useSelector((state: RootState) => state.searchQuery);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchModalOpen, setSearchModalOpen] = useState(false);
-  const [isLoginModalOpen, setLoginModalOpen] = useState(false); // <-- added
+  const [authModalState, setAuthModalState] = useState<"login" | "signup" | null>(null);
+  const [isUserMenuOpen, setUserMenuOpen] = useState(false);
+
+  const { token, userName, logout } = useAuth();
 
   const MOVIEAPIURL = TMDB.trendingMovies;
   const SHOWAPIURL = TMDB.trendingShows;
@@ -43,11 +48,27 @@ const Homepage: FunctionComponent = () => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setSearchModalOpen(false);
-        setLoginModalOpen(false);
+        setAuthModalState(null);
+        setUserMenuOpen(false);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  // Close user menu if clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (
+        !target.closest("#user-menu") &&
+        !target.closest("#user-menu-toggle")
+      ) {
+        setUserMenuOpen(false);
+      }
+    };
+    window.addEventListener("click", handleClickOutside);
+    return () => window.removeEventListener("click", handleClickOutside);
   }, []);
 
   const handleResultClick = (result: any) => {
@@ -60,6 +81,7 @@ const Homepage: FunctionComponent = () => {
   };
 
   return (
+  
     <div className="space-y-10 pt-6 relative">
       {/* Search Bar */}
       <div className="w-full px-4 sm:px-6">
@@ -70,26 +92,55 @@ const Homepage: FunctionComponent = () => {
             onFocus={() => setSearchModalOpen(true)}
             readOnly
           />
-          <LogoutOutlined
-            style={{
-              fontSize: "24px",
-              color: "white",
-              cursor: "pointer",
-              marginLeft: 12,
-            }}
-            onClick={() => {
-              setLoginModalOpen(true);
-            }}
-          />
+
+          {token && userName ? (
+            <div className="relative">
+              <button
+                id="user-menu-toggle"
+                onClick={() => setUserMenuOpen((prev) => !prev)}
+                className="flex items-center gap-2 text-white cursor-pointer"
+                type="button"
+              >
+                <UserOutlined style={{ fontSize: 24 }} />
+                <span>{userName}</span>
+              </button>
+
+              {isUserMenuOpen && (
+                <div
+                  id="user-menu"
+                  className="absolute right-0 mt-2 w-32 bg-gray-900 rounded shadow-lg z-50"
+                >
+                  <button
+                    onClick={() => {
+                      logout();
+                      setUserMenuOpen(false);
+                      setAuthModalState("login");
+                    }}
+                    className="block w-full px-4 py-2 text-left text-white hover:bg-gray-700"
+                    type="button"
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <LogoutOutlined
+              style={{
+                fontSize: "24px",
+                color: "white",
+                cursor: "pointer",
+                marginLeft: 12,
+              }}
+              onClick={() => setAuthModalState("login")}
+            />
+          )}
         </div>
       </div>
 
       {/* Hero Slider */}
       <HeroSlider
-        movies={[...(movies?.results || []), ...(shows?.results || [])].slice(
-          0,
-          5
-        )}
+        movies={[...(movies?.results || []), ...(shows?.results || [])].slice(0, 5)}
       />
 
       {/* Trending Movies and Shows */}
@@ -123,9 +174,7 @@ const Homepage: FunctionComponent = () => {
                   cursor: "pointer",
                   marginLeft: 12,
                 }}
-                onClick={() => {
-                  setLoginModalOpen(true);
-                }}
+                onClick={() => setAuthModalState("login")}
               />
             </div>
             <SearchBar value={searchQuery} onChange={setSearchQuery} />
@@ -163,11 +212,18 @@ const Homepage: FunctionComponent = () => {
         </>
       )}
 
-      {/* ✅ Login Modal */}
-      {isLoginModalOpen && (
-        <>
-          <LoginModal onClose={() => setLoginModalOpen(false)} />
-        </>
+      {/* Auth Modal */}
+      {authModalState === "login" && (
+        <LoginModal
+          onClose={() => setAuthModalState(null)}
+          onSwitchToSignup={() => setAuthModalState("signup")}
+        />
+      )}
+      {authModalState === "signup" && (
+        <SignupModal
+          onClose={() => setAuthModalState(null)}
+          onSwitchToLogin={() => setAuthModalState("login")}
+        />
       )}
     </div>
   );

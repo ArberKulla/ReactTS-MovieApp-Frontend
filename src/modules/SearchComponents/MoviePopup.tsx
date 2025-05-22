@@ -39,50 +39,50 @@ const MoviePopup: React.FC<MoviePopupProps> = ({
     navigate(`/watch/${type}/${movie.id}`);
   };
 
-  const handleAddToWatchlist = async () => {
-    if (!token) {
-      toast.error("You must be logged in to add to your watchlist.");
-      return;
-    }
+const handleAddToWatchlist = async () => {
+  if (!token) {
+    toast.error("You must be logged in to add to your watchlist.");
+    return;
+  }
 
-    const payload = {
-      movieId: movie.id.toString(),
-      title: movie.title || "Untitled",
-      description: movie.overview?.slice(0, 500) || "",
-      rating: parseFloat(movie.vote_average?.toFixed(1) || "0"),
-      posterUrl: movie.poster_path
-        ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
-        : "",
-      backdropUrl: movie.backdrop_path
-        ? `https://image.tmdb.org/t/p/w500/${movie.backdrop_path}`
-        : "",
-    };
-
-    try {
-      const response = await axios.post(
-        "http://localhost:8080/api/watchlists/watchlist",
-        payload,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      toast.success("Movie added to watchlist!");
-      console.log("Added to watchlist:", response.data);
-    } catch (error: any) {
-      if (
-        error.response?.status === 409 ||
-        error.response?.data?.includes("already")
-      ) {
-        toast.error("Movie is already in your watchlist.");
-      } else {
-        toast.error("Failed to add movie. Please try again.");
-      }
-      console.error("Failed to add to watchlist:", error);
-    }
+  const payload = {
+    movieId: movie.id.toString(),
+    title: movie.title,
+    description: movie.overview?.slice(0, 500) || "",
+    rating: parseFloat(movie.vote_average?.toFixed(1) || "0"),
+    type: type,
+    releaseYear: movie.release_date?.slice(0, 4) || movie.first_air_date?.slice(0, 4) || "—", 
+    posterUrl: movie.poster_path ? `${movie.poster_path}` : "",
+    backdropUrl: movie.backdrop_path ? `${movie.backdrop_path}` : "",
   };
+
+
+  try {
+    const response = await axios.post(
+      "http://localhost:8080/api/watchlists/watchlist",
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    toast.success("Movie added to watchlist!");
+    console.log("Added to watchlist:", response.data);
+  } catch (error: any) {
+    if (
+      error.response?.status === 409 ||
+      error.response?.data?.includes("already")
+    ) {
+      toast.error("Movie is already in your watchlist.");
+    } else {
+      toast.error("Failed to add movie. Please try again.");
+    }
+    console.error("Failed to add to watchlist:", error);
+  }
+};
+
 
   return (
     <div

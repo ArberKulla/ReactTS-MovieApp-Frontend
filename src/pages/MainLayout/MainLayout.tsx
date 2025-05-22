@@ -6,13 +6,24 @@ import {
   SearchOutlined,
   VideoCameraOutlined,
   DesktopOutlined,
-  ClockCircleOutlined,
   HeartOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
+
+import { useAuth } from "../../contexts/AuthContext"; // Adjust path as needed
+import LoginModal from "../../modules/Authenticate/Login";
+import SignupModal from "../../modules/Authenticate/SignUp";
 
 const MainLayout: FunctionComponent = () => {
   const [isCompact, setIsCompact] = useState(false);
   const location = useLocation();
+
+  const { token, userName, logout } = useAuth();
+
+  const [authModalState, setAuthModalState] = useState<"login" | "signup" | null>(null);
+
+  // Dropdown toggle for account options (Logout)
+  const [showAccountOptions, setShowAccountOptions] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -23,6 +34,30 @@ const MainLayout: FunctionComponent = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // Close dropdown if clicked outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest("#account-dropdown")) {
+        setShowAccountOptions(false);
+      }
+    };
+    if (showAccountOptions) {
+      document.addEventListener("click", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [showAccountOptions]);
+
+  // Handler for WatchList click
+  const handleWatchlistClick = (e: React.MouseEvent) => {
+    if (!token) {
+      e.preventDefault();
+      setAuthModalState("login");
+    }
+  };
+
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-[#000]">
       {/* Top Navigation Bar for Mobile */}
@@ -31,21 +66,21 @@ const MainLayout: FunctionComponent = () => {
           to="/"
           className={`flex flex-col items-center text-white text-[15px]`}
         >
-          <HomeOutlined className="text-[18px]" style={{ color: 'white'}}/>
+          <HomeOutlined className="text-[18px]" style={{ color: "white" }} />
           <span className="text-xs text-white">All</span>
         </Link>
         <Link
           to="/movies"
           className={`flex flex-col items-center text-white text-[15px]`}
         >
-          <VideoCameraOutlined className="text-[18px]" style={{ color: 'white'}}/>
+          <VideoCameraOutlined className="text-[18px]" style={{ color: "white" }} />
           <span className="text-xs text-white">Movies</span>
         </Link>
         <Link
           to="/tv"
           className={`flex flex-col items-center text-white text-[15px]`}
         >
-          <DesktopOutlined className="text-[18px]" style={{ color: 'white'}}/>
+          <DesktopOutlined className="text-[18px]" style={{ color: "white" }} />
           <span className="text-xs text-white">TV</span>
         </Link>
       </div>
@@ -63,14 +98,14 @@ const MainLayout: FunctionComponent = () => {
               to="/"
               className="flex items-center gap-3 px-3 py-2 text-[15px] font-semibold text-white rounded hover:bg-white/10 transition"
             >
-              <HomeOutlined className="text-[18px]" style={{ color: 'white'}}/>
+              <HomeOutlined className="text-[18px]" style={{ color: "white" }} />
               {!isCompact && <span className="text-white">Home</span>}
             </Link>
             <Link
               to="/search"
               className="flex items-center gap-3 px-3 py-2 text-[15px] font-semibold text-white rounded hover:bg-white/10 transition"
             >
-              <SearchOutlined className="text-[18px]" style={{ color: 'white'}} />
+              <SearchOutlined className="text-[18px]" style={{ color: "white" }} />
               {!isCompact && <span className="text-white">Search</span>}
             </Link>
           </div>
@@ -82,26 +117,89 @@ const MainLayout: FunctionComponent = () => {
                 to="/explore/movies"
                 className="flex items-center gap-3 px-3 py-2 text-[15px] font-semibold text-white rounded hover:bg-white/10 transition"
               >
-                <VideoCameraOutlined className="text-[18px]" style={{ color: 'white'}}/>
+                <VideoCameraOutlined className="text-[18px]" style={{ color: "white" }} />
                 {!isCompact && <span className="text-white">Movies</span>}
               </Link>
               <Link
                 to="/explore/tv"
                 className="flex items-center gap-3 px-3 py-2 text-[15px] font-semibold text-white rounded hover:bg-white/10 transition"
               >
-                <DesktopOutlined className="text-[18px]" style={{ color: 'white'}}/>
+                <DesktopOutlined className="text-[18px]" style={{ color: "white" }} />
                 {!isCompact && <span className="text-white">TV Shows</span>}
               </Link>
             </div>
 
             <div className="space-y-2 pt-6">
+              {/* WatchList with conditional login modal */}
               <Link
                 to="/watchlist"
+                onClick={handleWatchlistClick}
                 className="flex items-center gap-3 px-3 py-2 text-[15px] font-semibold text-white rounded hover:bg-white/10 transition"
               >
-                <HeartOutlined className="text-[18px]" style={{ color: 'white'}}/>
+                <HeartOutlined className="text-[18px] " style={{ color: "white" }} />
                 {!isCompact && <span className="text-white">WatchList</span>}
               </Link>
+
+              {/* Account Section */}
+              <div className="pt-2">
+                {token && userName ? (
+                  <div
+                    id="account-dropdown"
+                    className="relative flex items-center gap-3 px-3 py-2 cursor-pointer rounded select-none"
+                    onClick={() => setShowAccountOptions(!showAccountOptions)}
+                  >
+                    <UserOutlined className="text-[18px]" style={{ color: "white" }} />
+                    {!isCompact && <span className="text-white">{userName}</span>}
+
+                    {/* Dropdown arrow */}
+                    {!isCompact && (
+                      <svg
+                        className={`w-4 h-4 ml-1 transition-transform duration-200 ${
+                          showAccountOptions ? "rotate-180" : ""
+                        }`}
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"></path>
+                      </svg>
+                    )}
+
+                    {/* Dropdown menu opening to the right */}
+                    {showAccountOptions && !isCompact && (
+                      <div className="absolute top-0 left-full ml-2 w-32 bg-[#181818] rounded-md shadow-lg border border-gray-700 z-50">
+                        <button
+                          onClick={() => {
+                            logout();
+                            setShowAccountOptions(false);
+                          }}
+                          className="w-full text-left px-4 py-2 text-red-500 hover:bg-red-600 hover:text-white rounded-md font-semibold"
+                          type="button"
+                        >
+                          Logout
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div
+                    onClick={() => setAuthModalState("login")}
+                    className="flex items-center gap-3 px-3 py-2 cursor-pointer rounded "
+                  >
+                    <UserOutlined className="text-[18px]" style={{ color: "white" }} />
+                    {!isCompact && (
+                      <button
+                        className="text-white font-semibold hover:underline"
+                        type="button"
+                      >
+                        Login
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </nav>
@@ -113,6 +211,20 @@ const MainLayout: FunctionComponent = () => {
           <Outlet />
         </div>
       </main>
+
+      {/* Auth Modals */}
+      {authModalState === "login" && (
+        <LoginModal
+          onClose={() => setAuthModalState(null)}
+          onSwitchToSignup={() => setAuthModalState("signup")}
+        />
+      )}
+      {authModalState === "signup" && (
+        <SignupModal
+          onClose={() => setAuthModalState(null)}
+          onSwitchToLogin={() => setAuthModalState("login")}
+        />
+      )}
     </div>
   );
 };

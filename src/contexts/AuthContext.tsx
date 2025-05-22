@@ -33,7 +33,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       try {
         const decodedToken = jwtDecode<DecodedToken>(token);
         const decodedRole = decodedToken.authorities?.[0] || "Default";
-        const decodedUserName = decodedToken.userName;
+        const decodedUserName = decodedToken.sub;
 
         setRole(decodedRole);
         setUserName(decodedUserName);

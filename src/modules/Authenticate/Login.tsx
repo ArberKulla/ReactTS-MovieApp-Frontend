@@ -1,13 +1,51 @@
 import { useState } from "react";
 import { FaUser, FaKey } from "react-icons/fa";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { useAuth } from "../../contexts/AuthContext"; // adjust path as needed
+import { useNavigate } from "react-router-dom";
 
 type LoginModalProps = {
   onClose: () => void;
+  onSwitchToSignup: () => void;
 };
 
-export default function LoginModal({ onClose }: LoginModalProps) {
+export default function LoginModal({ onClose, onSwitchToSignup }: LoginModalProps) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
+  const { login: loginToContext } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      toast.error("Please fill in both fields.");
+      return;
+    }
+
+    try {
+      const res = await axios.post("http://localhost:8080/api/auth/authenticate", {
+        email,
+        password,
+      });
+
+      const token = res.data.access_token;
+      if (token) {
+        loginToContext(token);
+        toast.success("Login successful!");
+        onClose();
+        navigate("/");
+      } else {
+        toast.error("Login failed: no token received.");
+        console.warn("Login response didn't include a token.");
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      toast.error("Invalid email or password.");
+    }
+  };
 
   return (
     <div
@@ -16,7 +54,7 @@ export default function LoginModal({ onClose }: LoginModalProps) {
     >
       <div
         className="bg-[#1c1c1c] p-6 rounded-xl w-[350px] relative text-white"
-        onClick={(e) => e.stopPropagation()} 
+        onClick={(e) => e.stopPropagation()}
       >
         <button
           className="absolute top-3 right-3 text-white text-xl font-bold"
@@ -26,12 +64,14 @@ export default function LoginModal({ onClose }: LoginModalProps) {
         </button>
         <h2 className="text-2xl font-bold text-center mb-6">Welcome Back</h2>
 
-        {/* Username */}
+        {/* Email */}
         <div className="flex items-center bg-[#2d2d2d] rounded-md px-3 py-2 mb-4">
           <FaUser className="text-gray-400 mr-2" />
           <input
-            type="text"
-            placeholder="Username"
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="bg-transparent focus:outline-none w-full text-white placeholder-gray-400"
           />
         </div>
@@ -42,6 +82,8 @@ export default function LoginModal({ onClose }: LoginModalProps) {
           <input
             type={showPassword ? "text" : "password"}
             placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             className="bg-transparent focus:outline-none w-full text-white placeholder-gray-400"
           />
           <button
@@ -53,14 +95,20 @@ export default function LoginModal({ onClose }: LoginModalProps) {
         </div>
 
         {/* Login Button */}
-        <button className="bg-white text-black font-semibold py-2 w-full rounded-md mb-4 hover:bg-gray-200 transition">
+        <button
+          onClick={handleLogin}
+          className="bg-white text-black font-semibold py-2 w-full rounded-md mb-4 hover:bg-gray-200 transition"
+        >
           Login
         </button>
 
         {/* Sign Up Link */}
         <p className="text-center text-sm text-gray-400">
           Don’t have an account?{" "}
-          <span className="text-white font-semibold cursor-pointer hover:underline">
+          <span
+            className="text-white font-semibold cursor-pointer hover:underline"
+            onClick={onSwitchToSignup}
+          >
             SignUp
           </span>
         </p>
