@@ -177,15 +177,6 @@ const Homepage: FunctionComponent = () => {
           <div className="fixed top-1/2 left-1/2 z-50 w-full max-w-xl px-4 transform -translate-x-1/2 -translate-y-1/2">
             <div className="flex justify-between items-center mb-2">
               <h2 className="text-white text-xl font-bold">Search</h2>
-              <LogoutOutlined
-                style={{
-                  fontSize: "24px",
-                  color: "white",
-                  cursor: "pointer",
-                  marginLeft: 12,
-                }}
-                onClick={() => setAuthModalState("login")}
-              />
             </div>
             <SearchBar value={searchQuery} onChange={setSearchQuery} />
             {searchResults.length > 0 && (
