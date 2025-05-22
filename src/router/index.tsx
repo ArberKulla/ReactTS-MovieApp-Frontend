@@ -18,6 +18,9 @@ const MainLayout = Loadable(lazy(() => import("../pages/MainLayout/MainLayout"))
 const Homepage = Loadable(lazy(() => import("../pages/Homepage/Homepage")));
 const MovieWatchPage = Loadable(lazy(() => import("../pages/MovieWatchPage/MovieWatchPage")));
 
+//Test
+const LoginTest = Loadable(lazy(() => import("../pages/Test/LoginTest")));
+
 const Router = () =>
   useRoutes([
     {
@@ -43,9 +46,13 @@ const Router = () =>
         {
           path: "explore/tv",
           element: <ShowSearchPage />,
-        },    
+        }, 
       ],
     },
+    {
+          path: "/test",
+          element: <LoginTest/>
+        },
     {
       path: "*",
       element: <Error404Page />,

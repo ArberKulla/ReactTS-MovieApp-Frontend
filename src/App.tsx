@@ -5,6 +5,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import { Provider } from 'react-redux'
 import {store} from "./data/store";
 import ErrorBoundary from "antd/es/alert/ErrorBoundary";
+import { Toaster } from "react-hot-toast";
 
 
 const App = () => {
@@ -15,6 +16,7 @@ const App = () => {
           <AntdApp>
             <Router>
               <Routers />
+              <Toaster position="top-center" />
             </Router>
           </AntdApp>
         </AuthProvider>
