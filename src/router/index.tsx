@@ -18,6 +18,7 @@ const MainLayout = Loadable(lazy(() => import("../pages/MainLayout/MainLayout"))
 const Homepage = Loadable(lazy(() => import("../pages/Homepage/Homepage")));
 const MovieWatchPage = Loadable(lazy(() => import("../pages/MovieWatchPage/MovieWatchPage")));
 const WatchlistPage = Loadable(lazy(() => import("../pages/Watchlist/Watchlist")));
+const Adminpage = Loadable(lazy(() => import("../pages/Adminpage/Adminpage")));
 
 //Test
 const LoginTest = Loadable(lazy(() => import("../pages/Test/LoginTest")));
@@ -53,6 +54,10 @@ const Router = () =>
           element: <WatchlistPage />,
         }, 
       ],
+    },
+    {
+          path: "/admin",
+          element: <Adminpage/>
     },
     {
           path: "/test",

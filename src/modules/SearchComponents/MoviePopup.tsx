@@ -47,7 +47,7 @@ const handleAddToWatchlist = async () => {
 
   const payload = {
     movieId: movie.id.toString(),
-    title: movie.title,
+    title: movie.title ? movie.title : movie.name,
     description: movie.overview?.slice(0, 500) || "",
     rating: parseFloat(movie.vote_average?.toFixed(1) || "0"),
     type: type,
@@ -100,14 +100,14 @@ const handleAddToWatchlist = async () => {
       <div className="w-full aspect-video">
         <img
           src={imageSrc}
-          alt={movie.title}
+          alt={movie.title ? movie.title : movie.name}
           className="w-full h-full object-cover"
         />
       </div>
 
       {/* Middle - Title and Overview */}
       <div className="px-4 py-2 flex-1">
-        <h3 className="text-lg font-semibold line-clamp-2">{movie.title}</h3>
+        <h3 className="text-lg font-semibold line-clamp-2">{movie.title ? movie.title : movie.name}</h3>
         <p className="text-sm mt-1 text-gray-300 line-clamp-4">{overview}</p>
       </div>
 

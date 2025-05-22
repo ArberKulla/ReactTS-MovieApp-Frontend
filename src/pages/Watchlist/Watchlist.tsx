@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import toast from "react-hot-toast"; // <-- Import toast
+import toast from "react-hot-toast";
 import { useAuth } from "../../contexts/AuthContext";
+import { useNavigate } from "react-router-dom"; // <-- Import useNavigate
 import MovieCard from "../../modules/SearchComponents/MovieCard";
 import MoviePopup from "../../modules/SearchComponents/MoviePopup";
 
@@ -11,6 +12,7 @@ const GAP = 4;
 
 const WatchlistPage: React.FC = () => {
   const { token } = useAuth();
+  const navigate = useNavigate(); // <-- Initialize navigate
 
   const [watchlist, setWatchlist] = useState<any[]>([]);
   const [hoveredMovie, setHoveredMovie] = useState<any | null>(null);
@@ -19,7 +21,10 @@ const WatchlistPage: React.FC = () => {
   const [isPopupHovered, setIsPopupHovered] = useState(false);
 
   useEffect(() => {
-    if (!token) return;
+    if (!token) {
+      navigate("/"); // <-- Redirect to homepage if not authenticated
+      return;
+    }
 
     const fetchWatchlist = async () => {
       try {
@@ -31,7 +36,6 @@ const WatchlistPage: React.FC = () => {
         });
 
         const transformed = (res.data.content || []).map(transformMovieItem);
-
         setWatchlist(transformed);
       } catch (err) {
         console.error(err);
@@ -39,7 +43,7 @@ const WatchlistPage: React.FC = () => {
     };
 
     fetchWatchlist();
-  }, [token]);
+  }, [token, navigate]);
 
   function transformMovieItem(item: any) {
     return {
@@ -115,17 +119,17 @@ const WatchlistPage: React.FC = () => {
             <div key={item.originalId} className="flex flex-col items-center w-[150px] ml-3">
               <MovieCard
                 movie={item}
-                type={item.media_type || "movie"}
+                type={item.type || "movie"}
                 onMouseEnter={(e) => handleCardMouseEnter(item, e)}
                 onMouseLeave={handleCardMouseLeave}
               />
               <div className="mt-1 text-sm text-white w-full px-1 flex justify-between">
-                <span className="text-zinc-400 capitalize truncate">{item.media_type || "movie"}</span>
+                <span className="text-zinc-400 capitalize truncate">{item.type || "movie"}</span>
                 <span className="text-zinc-500 truncate">
                   {item.release_date?.slice(0, 4) || item.first_air_date?.slice(0, 4) || "—"}
                 </span>
               </div>
-              <div className="text-white text-sm font-semibold px-1 truncate w-full text-center">
+              <div className="text-white text-sm font-semibold px-1 truncate w-full">
                 {item.title || item.name}
               </div>
 
@@ -147,7 +151,7 @@ const WatchlistPage: React.FC = () => {
           left={popupPos.left}
           onMouseEnter={handlePopupMouseEnter}
           onMouseLeave={handlePopupMouseLeave}
-          type={hoveredMovie.media_type || "movie"}
+          type={hoveredMovie.type || "movie"}
         />
       )}
     </div>

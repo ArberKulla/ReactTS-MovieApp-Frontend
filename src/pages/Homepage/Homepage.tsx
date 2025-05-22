@@ -14,7 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { LogoutOutlined, UserOutlined } from "@ant-design/icons";
 import LoginModal from "../../modules/Authenticate/Login";
 import SignupModal from "../../modules/Authenticate/SignUp";
-import { useAuth } from "../../contexts/AuthContext"; // <-- adjust path to your AuthProvider
+import { useAuth } from "../../contexts/AuthContext";
 
 const Homepage: FunctionComponent = () => {
   const dispatch = useAppDispatch();
@@ -29,7 +29,7 @@ const Homepage: FunctionComponent = () => {
   const [authModalState, setAuthModalState] = useState<"login" | "signup" | null>(null);
   const [isUserMenuOpen, setUserMenuOpen] = useState(false);
 
-  const { token, userName, logout } = useAuth();
+  const { token, userName, role, logout } = useAuth();
 
   const MOVIEAPIURL = TMDB.trendingMovies;
   const SHOWAPIURL = TMDB.trendingShows;
@@ -56,7 +56,6 @@ const Homepage: FunctionComponent = () => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  // Close user menu if clicking outside
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
@@ -81,7 +80,6 @@ const Homepage: FunctionComponent = () => {
   };
 
   return (
-  
     <div className="space-y-10 pt-6 relative">
       {/* Search Bar */}
       <div className="w-full px-4 sm:px-6">
@@ -110,13 +108,25 @@ const Homepage: FunctionComponent = () => {
                   id="user-menu"
                   className="absolute right-0 mt-2 w-32 bg-gray-900 rounded shadow-lg z-50"
                 >
+                  {role === "ROLE_ADMIN" && (
+                    <button
+                      onClick={() => {
+                        navigate("/admin");
+                        setUserMenuOpen(false);
+                      }}
+                      className="w-full text-left px-4 py-2 text-blue-400 hover:bg-blue-600 hover:text-white rounded-md font-semibold"
+                      type="button"
+                    >
+                      Admin Page
+                    </button>
+                  )}
                   <button
                     onClick={() => {
                       logout();
                       setUserMenuOpen(false);
                       setAuthModalState("login");
                     }}
-                    className="block w-full px-4 py-2 text-left text-white hover:bg-gray-700"
+                    className="w-full text-left px-4 py-2 text-red-500 hover:bg-red-600 hover:text-white rounded-md font-semibold"
                     type="button"
                   >
                     Logout
