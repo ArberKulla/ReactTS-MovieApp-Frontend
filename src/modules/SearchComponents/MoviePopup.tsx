@@ -5,6 +5,8 @@ import { HeartFilled } from "@ant-design/icons";
 import axios from "axios";
 import { useAuth } from "../../contexts/AuthContext";
 import toast from "react-hot-toast"; // <-- Import toast
+import { TMDB } from "../../configs/tmdb"; 
+
 
 interface MoviePopupProps {
   movie: any;
@@ -25,6 +27,7 @@ const MoviePopup: React.FC<MoviePopupProps> = ({
 }) => {
   const navigate = useNavigate();
   const { token } = useAuth();
+  const BACKENDURL = TMDB.BACKEND_BASE
 
   const fallbackImage = "/fallback.jpg";
   const imageSrc = movie.backdrop_path
@@ -59,7 +62,7 @@ const handleAddToWatchlist = async () => {
 
   try {
     const response = await axios.post(
-      "http://localhost:8080/api/watchlists/watchlist",
+      BACKENDURL+"watchlists/watchlist",
       payload,
       {
         headers: {

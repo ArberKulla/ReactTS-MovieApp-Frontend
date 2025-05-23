@@ -3,6 +3,7 @@ import { FaUser, FaEnvelope, FaKey, FaPhone } from "react-icons/fa";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { TMDB } from "../../configs/tmdb"; 
 
 type SignupModalProps = {
   onClose: () => void;
@@ -20,6 +21,8 @@ export default function SignupModal({ onClose, onSwitchToLogin }: SignupModalPro
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const BACKENDURL = TMDB.BACKEND_BASE
+  
 
   const handleRegister = async () => {
     if (!firstName || !lastName || !email || !password || !confirmPassword || !phoneNumber) {
@@ -33,7 +36,7 @@ export default function SignupModal({ onClose, onSwitchToLogin }: SignupModalPro
     }
 
     try {
-      const res = await axios.post("http://localhost:8080/api/auth/register", {
+      const res = await axios.post(BACKENDURL+"auth/register", {
         firstName,
         lastName,
         email,

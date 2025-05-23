@@ -3,7 +3,9 @@ import axios from "axios";
 import { HeartFilled } from "@ant-design/icons";
 import toast from "react-hot-toast";
 import { useAuth } from "../../contexts/AuthContext";
-import { useNavigate } from "react-router-dom"; // ✅ Import navigate
+import { useNavigate } from "react-router-dom";
+import { TMDB } from "../../configs/tmdb"; 
+
 
 type Movie = {
   id: number;
@@ -61,6 +63,7 @@ const HeroSlider = ({ movies }: { movies: Movie[] }) => {
   const POSTER_WIDTH = 360;
   const MIN_SPACE_REQUIRED = 1024;
   const showPoster = windowWidth >= MIN_SPACE_REQUIRED;
+  const BACKENDURL = TMDB.BACKEND_BASE
 
   // ✅ Determine movie type
   const type = movie.media_type || (movie.title ? "movie" : "tv");
@@ -89,7 +92,7 @@ const HeroSlider = ({ movies }: { movies: Movie[] }) => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/watchlists/watchlist",
+        BACKENDURL+"watchlists/watchlist",
         payload,
         {
           headers: {

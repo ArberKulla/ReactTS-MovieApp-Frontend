@@ -1,9 +1,12 @@
 const API_KEY = import.meta.env.VITE_API_KEY;
 const API_BASE = import.meta.env.VITE_API_BASE;
+const BACKEND_BASE = import.meta.env.VITE_BACKEND_BASE;
+
 
 export const TMDB = {
   API_KEY,
   BASE_URL: API_BASE,
+  BACKEND_BASE: BACKEND_BASE,
 
   // Discover
   get discoverMovies() {

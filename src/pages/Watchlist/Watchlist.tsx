@@ -5,6 +5,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom"; // <-- Import useNavigate
 import MovieCard from "../../modules/SearchComponents/MovieCard";
 import MoviePopup from "../../modules/SearchComponents/MoviePopup";
+import { TMDB } from "../../configs/tmdb"; 
 
 const POPUP_WIDTH = 256;
 const POPUP_HEIGHT = 320;
@@ -19,6 +20,8 @@ const WatchlistPage: React.FC = () => {
   const [popupPos, setPopupPos] = useState<{ top: number; left: number } | null>(null);
   const [isCardHovered, setIsCardHovered] = useState(false);
   const [isPopupHovered, setIsPopupHovered] = useState(false);
+    const BACKENDURL = TMDB.BACKEND_BASE
+  
 
   useEffect(() => {
     if (!token) {
@@ -28,7 +31,7 @@ const WatchlistPage: React.FC = () => {
 
     const fetchWatchlist = async () => {
       try {
-        const res = await axios.get("http://localhost:8080/api/watchlists/get", {
+        const res = await axios.get(BACKENDURL+"watchlists/get", {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",

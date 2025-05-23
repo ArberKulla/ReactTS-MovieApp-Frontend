@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useAuth } from "../../contexts/AuthContext"; // <-- update path as needed
+import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { TMDB } from "../../configs/tmdb"; 
+
 
 type UserRole = "USER" | "ADMIN";
 
 const LoginTest: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
-
+  const BACKENDURL = TMDB.BACKEND_BASE
   // Shared
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -23,7 +25,7 @@ const LoginTest: React.FC = () => {
 
   const handleLogin = async () => {
     try {
-      const res = await axios.post("http://localhost:8080/api/auth/authenticate", {
+      const res = await axios.post(BACKENDURL+"auth/authenticate", {
         email,
         password,
       });
@@ -43,7 +45,7 @@ const LoginTest: React.FC = () => {
 
   const handleRegister = async () => {
     try {
-      const res = await axios.post("http://localhost:8080/api/auth/register", {
+      const res = await axios.post(BACKENDURL+"auth/register", {
         firstName,
         lastName,
         email,

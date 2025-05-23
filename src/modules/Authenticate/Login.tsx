@@ -3,8 +3,9 @@ import { FaUser, FaKey } from "react-icons/fa";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { useAuth } from "../../contexts/AuthContext"; // adjust path as needed
+import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { TMDB } from "../../configs/tmdb"; 
 
 type LoginModalProps = {
   onClose: () => void;
@@ -19,6 +20,8 @@ export default function LoginModal({ onClose, onSwitchToSignup }: LoginModalProp
   const { login: loginToContext } = useAuth();
   const navigate = useNavigate();
 
+   const BACKENDURL = TMDB.BACKEND_BASE
+
   const handleLogin = async () => {
     if (!email || !password) {
       toast.error("Please fill in both fields.");
@@ -26,7 +29,7 @@ export default function LoginModal({ onClose, onSwitchToSignup }: LoginModalProp
     }
 
     try {
-      const res = await axios.post("http://localhost:8080/api/auth/authenticate", {
+      const res = await axios.post(BACKENDURL+"auth/authenticate", {
         email,
         password,
       });

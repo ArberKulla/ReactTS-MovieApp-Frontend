@@ -15,6 +15,7 @@ import axios from "axios";
 import { useAuth } from "../../contexts/AuthContext";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { TMDB } from "../../configs/tmdb"; 
 
 const { Title } = Typography;
 
@@ -50,6 +51,7 @@ const AdminUsers = () => {
   const [createForm] = Form.useForm();
   const { token, role } = useAuth();
   const navigate = useNavigate();
+  const BACKENDURL = TMDB.BACKEND_BASE
 
   useEffect(() => {
     if (!token || role !== "ROLE_ADMIN") {
@@ -62,7 +64,7 @@ const AdminUsers = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/user", {
+      const response = await axios.get(BACKENDURL+"user", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUsers(response.data);
@@ -76,7 +78,7 @@ const AdminUsers = () => {
 
     try {
       const res = await axios.get(
-        `http://localhost:8080/api/watchlists/get/user/${userId}`,
+        BACKENDURL+`watchlists/get/user/${userId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setWatchlists((prev) => ({
@@ -126,7 +128,7 @@ const AdminUsers = () => {
   const handleCreateUser = async () => {
     try {
       const values = await createForm.validateFields();
-      await axios.post("http://localhost:8080/api/auth/register", values, {
+      await axios.post(BACKENDURL+"auth/register", values, {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success("User created successfully.");
